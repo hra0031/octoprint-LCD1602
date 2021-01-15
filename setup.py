@@ -41,7 +41,7 @@ plugin_url = "https://github.com/hra0031/octoprint-LCD1602"
 plugin_license = "AGPLv3"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ["adafruit-charlcd", "smbus2", "Pygments"]
+plugin_requires = ["adafruit-charlcd", "smbus2", "Pygments", "RPi.GPIO"]
 
 ### ------------------------------------------------------------------------------------------------
 ### More advanced options that you usually shouldn't have to touch follow after this point
