@@ -4,7 +4,7 @@ This plug-in allows you to control a 16X2 lcd display (hd44780 connected to port
 It indicates on which port the printer is connected, the progress of printing. It also displays the remaining print time (thanks to a simple method).
 This plugin is based on: 
 
-https://github.com/n3bojs4/OctoPrint-Lcd1602
+    https://github.com/n3bojs4/OctoPrint-Lcd1602
 
 
 ## Setup
