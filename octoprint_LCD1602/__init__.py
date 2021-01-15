@@ -8,35 +8,26 @@ from __future__ import absolute_import
 from octoprint.printer.estimation import PrintTimeEstimator
 import octoprint.plugin
 import octoprint.events
-from RPLCD.i2c import CharLCD
+from Adafruit_CharLCD import Adafruit_CharLCD
+import Adafruit_GPIO.PCF8574 as PCF
 import time
 import datetime
 import os
 import sys
-from fake_rpi import printf
-import fake_rpi
-
 
 class LCD1602Plugin(octoprint.plugin.StartupPlugin,
                     octoprint.plugin.EventHandlerPlugin,
                     octoprint.plugin.ProgressPlugin):
 
   def __init__(self):
-    if (os.getenv('LCD1602_DOCKER')):
-      print('We are running in test environnement, no i2c device attached.')
-      try:
-        print('Loading fake_rpi instead of smbus2')
-        sys.modules['smbus2'] = fake_rpi.smbus
-        self.mylcd = fake_rpi.smbus.SMBus(1)
-      except:
-        print('Cannot load fake_rpi !')
-    else:
-      self.mylcd = CharLCD(i2c_expander='PCF8574', address=0x27, cols=16, rows=2, backlight_enabled=True, charmap='A00')
-      
+      #self.mylcd = CharLCD(i2c_expander='PCF8574', address=0x20, cols=16, rows=2, backlight_enabled=True, charmap='A00')
+      self.GPIO = PCF.PCF8574(address=0x20)
+      self.GPIO.setup(5, 0) # RW pin
+      self.mylcd = Adafruit_CharLCD(rs=6, en=4, d4=0, d5=1, d6=2, d7=3, cols=16, lines=2, gpio=self.GPIO, backlight=7)
       # create block for progress bar
-      self.block = bytearray(b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF')
-      self.block.append(255)
-      self.mylcd.create_char(1,self.block)
+      #self.block = bytearray(b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF')
+      #self.block.append(255)
+      #self.mylcd.create_char(1,self.block)
     
     # init vars
     self.start_date = 0
@@ -60,7 +51,7 @@ class LCD1602Plugin(octoprint.plugin.StartupPlugin,
   def on_after_startup(self):
     mylcd = self.mylcd
     self._logger.info("plugin initialized !")
-
+    mylcd.message('   OctoPrint\n  Initialized')
   
   def on_print_progress(self,storage,path,progress):
     mylcd = self.mylcd
